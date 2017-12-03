@@ -1,0 +1,35 @@
+---
+
+- name: Look for upgrade
+  become: true
+  become_user: nextcloud
+  command: php updater/updater.phar
+  args:
+    chdir: /opt/nextcloud
+  register: nextcloud_update
+  changed_when: "'No update available' not in nextcloud_update.stdout"
+  failed_when: false
+  
+- name: Copy update permission script
+  template:
+    dest: /home/nextcloud/permission-update.sh
+    src: home/nextcloud/permission-update.sh
+    owner: root
+    group: nextcloud
+    mode: 0750
+  when: nextcloud_update|changed
+
+- name: Set update permission
+  command: /home/nextcloud/permission-update.sh
+  when: nextcloud_update|changed
+
+- name: Make update
+  become: true
+  become_user: nextcloud
+  command: php updater/updater.phar --no-interaction
+  args:
+    chdir: /opt/nextcloud
+  when: nextcloud_update|changed
+
+- import_tasks: permission.yml
+  when: nextcloud_update|changed

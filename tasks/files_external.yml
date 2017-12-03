@@ -1,0 +1,17 @@
+---
+
+- name: "Create configuration file for {{ fe_config.key }}"
+  become: true
+  become_user: nextcloud
+  template:
+    src: home/nextcloud/files_external.json.j2
+    dest: "/home/nextcloud/files_external_{{ fe_config.key }}.json"
+  register: nextcloud_fe_setting
+
+- name: Import configuration
+  become: true
+  become_user: nextcloud
+  command: "/usr/bin/php occ files_external:import /home/nextcloud/files_external_{{ fe_config.key }}.json"
+  args:
+    chdir: /opt/nextcloud
+  when: nextcloud_fe_setting|changed

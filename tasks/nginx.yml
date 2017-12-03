@@ -1,0 +1,16 @@
+---
+
+- name: "Make nextcloud available"
+  template:
+    src: etc/nginx/sites-available/nextcloud.j2
+    dest: "/etc/nginx/sites-available/nextcloud"
+  notify:
+    - Reload nginx
+
+- name: "Enable nextcloud"
+  file:
+    src: "/etc/nginx/sites-available/nextcloud"
+    dest: "/etc/nginx/sites-enabled/nextcloud"
+    state: link
+  notify:
+    - Reload nginx

@@ -1,0 +1,30 @@
+---
+
+- name: Get apps list
+  become: true
+  become_user: nextcloud
+  command: /usr/bin/php occ app:list --output=json
+  args:
+    chdir: /opt/nextcloud
+  register: nextcloud_application
+  changed_when: false
+
+- name: Parse apps list
+  set_fact:
+    nextcloud_application: "{{ nextcloud_application.stdout|from_json }}"
+
+- name: Enable apps
+  become: true
+  become_user: nextcloud
+  command: "/usr/bin/php occ app:enable {{ item }}"
+  args:
+    chdir: /opt/nextcloud
+  when: "item in nextcloud_application.disabled"
+  with_items: "{{ nextcloud_apps }}"
+
+- name: Configure files external
+  include_tasks: files_external.yml
+  when: "'files_external' in nextcloud_apps"
+  with_dict: "{{ nextcloud_files_external_configs }}"
+  loop_control:
+    loop_var: fe_config
