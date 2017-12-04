@@ -3,7 +3,11 @@ services: docker
 
 env:
   - distro=debian8
+    playbook=debian
   - distro=debian9
+    playbook=debian
+  - distro=ubuntu1604
+    playbook=ubuntu
 
 install:
   - export container_id=$(date +%s)
@@ -23,9 +27,9 @@ install:
 
 script:
   # Run playbook.
-  - docker exec --tty $container_id env TERM=xterm ansible-playbook /etc/ansible/roles/ansible-role-nextcloud/tests/test.yml --syntax-check
-  - docker exec $container_id env TERM=xterm env ANSIBLE_FORCE_COLOR=1 ansible-playbook /etc/ansible/roles/ansible-role-nextcloud/tests/test.yml -vvv
-  - docker exec $container_id ansible-playbook /etc/ansible/roles/ansible-role-nextcloud/tests/test.yml | tee -a $idempotence
+  - docker exec --tty $container_id env TERM=xterm ansible-playbook /etc/ansible/roles/ansible-role-nextcloud/tests/$playbook.yml --syntax-check
+  - docker exec $container_id env TERM=xterm env ANSIBLE_FORCE_COLOR=1 ansible-playbook /etc/ansible/roles/ansible-role-nextcloud/tests/$playbook.yml -vvv
+  - docker exec $container_id ansible-playbook /etc/ansible/roles/ansible-role-nextcloud/tests/$playbook.yml | tee -a $idempotence
   - tail $idempotence | grep -q 'changed=0.*failed=0' && (printf 'Idempotence test pass') || (printf 'Idempotence test fail' && exit 1)
 
   # Tests

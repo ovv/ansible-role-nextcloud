@@ -51,3 +51,9 @@
     postgres_users:
       nextcloud:
         password: dbpassword
+
+    # pyslackers.nginx
+    nginx_sites:
+      nextcloud:
+        template: ../templates/etc/nginx/sites-available/nextcloud.j2
+        php_socket: /var/run/php7.0-fpm-nextcloud.sock

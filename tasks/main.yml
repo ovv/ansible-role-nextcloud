@@ -92,5 +92,3 @@
 
 - include_tasks: update.yml
   when: nextcloud_do_update
-
-- import_tasks: nginx.yml
