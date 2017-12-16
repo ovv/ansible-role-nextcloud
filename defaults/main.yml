@@ -1,0 +1,9 @@
+---
+
+nextcloud_version: 12.0.3
+nextcloud_do_update: False
+nextcloud_apps: []
+nextcloud_files_external_configs: {}
+nextcloud_bruteforce_protection: true
+nextcloud_default_app: files
+nextcloud_email_domain: "{{ nextcloud_domain }}"

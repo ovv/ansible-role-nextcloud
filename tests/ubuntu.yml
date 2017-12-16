@@ -1,0 +1,59 @@
+---
+- hosts: localhost
+  roles:
+    - pyslackers.postgres
+    - ovv.php7
+    - pyslackers.nginx
+    - ansible-role-nextcloud
+  vars:
+    nextcloud_user: admin
+    nextcloud_password: password
+    nextcloud_user_email: admin@example.com
+
+    nextcloud_db_user: nextcloud
+    nextcloud_db_password: dbpassword
+    nextcloud_domain: nextcloud.example.com
+    nextcloud_email_domain: example.com
+
+    nextcloud_apps:
+      - files_external
+
+    nextcloud_files_external_configs:
+      example:
+        mount: Example
+        storage: SFTP
+        configuration:
+          host: 127.0.0.1
+          password: password
+          root: /tmp
+          user: nextcloud
+
+    # ovv.php7
+    custom_php_packages:
+      - php7.0-gd
+      - php7.0-json
+      - php7.0-intl
+      - php-imagick
+      - php-apcu
+      - php7.0-xml
+      - php7.0-zip
+      - php7.0-pgsql
+
+    php_pools:
+      nextcloud:
+        socket: /var/run/php7.0-fpm-nextcloud.sock
+        user: nextcloud
+        createhome: yes
+        home: /home/nextcloud
+        working_dir: /opt/nextcloud
+
+    # pyslackers.postgres
+    postgres_users:
+      nextcloud:
+        password: dbpassword
+
+    # pyslackers.nginx
+    nginx_sites:
+      nextcloud:
+        template: ../templates/etc/nginx/sites-available/nextcloud.j2
+        php_socket: /var/run/php7.0-fpm-nextcloud.sock

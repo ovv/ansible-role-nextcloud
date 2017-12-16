@@ -1,0 +1,30 @@
+---
+
+- name: Directories owner/group
+  file:
+    path: "{{ item.path }}"
+    owner: "{{ item.owner | default('nextcloud') }}"
+    group: nextcloud
+    state: directory
+#    recurse: yes
+    mode: 0755
+  with_items:
+    - {path: /opt/nextcloud, owner: root}
+    - {path: /opt/nextcloud/apps}
+    - {path: /opt/nextcloud/config}
+    - {path: /opt/nextcloud/data}
+    - {path: /opt/nextcloud/themes}
+    - {path: /opt/nextcloud/updater}
+
+- name: Permission script
+  template:
+    dest: /home/nextcloud/permission.sh
+    src: home/nextcloud/permission.sh
+    owner: root
+    group: nextcloud
+    mode: 0750
+  register: nextcloud_permission_script
+
+- name: Set permission
+  command: /home/nextcloud/permission.sh
+  changed_when: False

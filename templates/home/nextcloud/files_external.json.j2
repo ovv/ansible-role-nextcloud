@@ -1,0 +1,15 @@
+{
+  "mount_point": "\/{{ fe_config.value.mount }}",
+  "storage": "\\OCA\\Files_External\\Lib\\Storage\\{{ fe_config.value.storage }}",
+  "authentication_type": "password::password",
+  "configuration": {{ fe_config.value.configuration | to_json }},
+  "options": {
+      "enable_sharing": false,
+      "encoding_compatibility": false,
+      "encrypt": true,
+      "filesystem_check_changes": 1,
+      "previews": true
+  },
+  "applicable_users": "{{ fe_config.value.users | default([]) | join(',') }}",
+  "applicable_groups": "{{ fe_config.value.groups | default([]) | join(',') }}"
+}

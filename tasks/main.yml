@@ -1,0 +1,94 @@
+---
+
+- name: Requirements
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+  with_items:
+    - unzip
+
+- name: Create user
+  user:
+    name: nextcloud
+
+- name: Download
+  get_url:
+    url: "https://download.nextcloud.com/server/releases/nextcloud-{{ nextcloud_version }}.zip"
+    dest: /usr/src/nextcloud.zip
+  register: nextcloud_download
+
+- name: Unarchive
+  unarchive:
+    src: /usr/src/nextcloud.zip
+    dest: /opt
+    remote_src: True
+  when: nextcloud_download|changed
+
+- name: Create directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: nextcloud
+    group: nextcloud
+  with_items:
+    - /home/nextcloud/data
+    - /opt/nextcloud/updater
+
+- import_tasks: permission.yml
+
+- name: Configure database
+  become: true
+  become_user: nextcloud
+  command: >
+      /usr/bin/php occ maintenance:install
+      --database=pgsql
+      --database-host=localhost
+      --database-name=nextcloud
+      --database-user={{ nextcloud_db_user }}
+      --database-pass={{ nextcloud_db_password }}
+      --admin-user={{ nextcloud_user }}
+      --admin-pass={{ nextcloud_password }}
+      --data-dir=/home/nextcloud/data
+  args:
+    chdir: /opt/nextcloud
+    creates: /opt/nextcloud/config/config.php
+
+- name: User email
+  become: true
+  become_user: nextcloud
+  command: >
+      /usr/bin/php occ user:setting {{ nextcloud_user }}
+  args:
+    chdir: /opt/nextcloud
+  register: nextcloud_user_setting_values
+  changed_when: "'- email: ' + nextcloud_user_email not in nextcloud_user_setting_values.stdout"
+
+- name: Set user email
+  become: true
+  become_user: nextcloud
+  command: >
+      /usr/bin/php occ user:setting {{ nextcloud_user }} settings email {{ nextcloud_user_email }}
+  args:
+    chdir: /opt/nextcloud
+  when: nextcloud_user_setting_values|changed
+
+- name: Configure
+  template:
+    dest: /opt/nextcloud/config/custom.config.php
+    src: opt/nextcloud/config/custom.config.php
+    owner: nextcloud
+    group: nextcloud
+  notify: Restart nextcloud
+
+- name: Cron
+  cron:
+    user: nextcloud
+    name: nextcloud
+    minute: '*/15'
+    job: /usr/bin/php -f /opt/nextcloud/cron.php
+
+- include_tasks: app.yml
+  when: nextcloud_apps
+
+- include_tasks: update.yml
+  when: nextcloud_do_update
