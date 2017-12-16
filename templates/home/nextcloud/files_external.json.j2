@@ -10,6 +10,6 @@
       "filesystem_check_changes": 1,
       "previews": true
   },
-  "applicable_users": {{ fe_config.value.users | default([]) }},
-  "applicable_groups": {{ fe_config.value.groups | default([]) }}
+  "applicable_users": "{{ fe_config.value.users | default([]) | join(',') }}",
+  "applicable_groups": "{{ fe_config.value.groups | default([]) | join(',') }}"
 }
