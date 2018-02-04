@@ -53,6 +53,7 @@
         password: dbpassword
 
     # pyslackers.nginx
+    ufw_enabled: False
     nginx_sites:
       nextcloud:
         template: ../templates/etc/nginx/sites-available/nextcloud.j2
