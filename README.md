@@ -101,6 +101,7 @@ Example Playbook
         createhome: yes
         home: /home/nextcloud
         working_dir: /opt/nextcloud
+        request_terminate_timeout: 3600
 
     # pyslackers.postgres
     postgres_users:
