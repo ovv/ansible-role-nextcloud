@@ -36,4 +36,4 @@ script:
   - docker exec --tty ${container_id} env TERM=xterm apt-get install -y curl
   - docker exec --tty ${container_id} env TERM=xterm curl localhost:80 -v
   - docker exec --tty ${container_id} env TERM=xterm journalctl -u nginx.service -n 100 --no-pager
-  - docker exec --tty ${container_id} env TERM=xterm cat /etc/nginx/site-enabled/nextcloud
+  - docker exec --tty ${container_id} env TERM=xterm cat /etc/nginx/sites-enabled/nextcloud
