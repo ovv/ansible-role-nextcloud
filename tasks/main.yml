@@ -22,7 +22,7 @@
     src: /usr/src/nextcloud.zip
     dest: /opt
     remote_src: True
-  when: nextcloud_download|changed
+  when: nextcloud_download is changed
 
 - name: Create directories
   file:
@@ -70,7 +70,7 @@
       /usr/bin/php occ user:setting {{ nextcloud_user }} settings email {{ nextcloud_user_email }}
   args:
     chdir: /opt/nextcloud
-  when: nextcloud_user_setting_values|changed
+  when: nextcloud_user_setting_values is changed
 
 - name: Configure
   template:

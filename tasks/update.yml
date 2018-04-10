@@ -17,11 +17,11 @@
     owner: root
     group: nextcloud
     mode: 0750
-  when: nextcloud_update|changed
+  when: nextcloud_update is changed
 
 - name: Set update permission
   command: /home/nextcloud/permission-update.sh
-  when: nextcloud_update|changed
+  when: nextcloud_update is changed
 
 - name: Make update
   become: true
@@ -29,7 +29,7 @@
   command: php updater/updater.phar --no-interaction
   args:
     chdir: /opt/nextcloud
-  when: nextcloud_update|changed
+  when: nextcloud_update is changed
 
 - import_tasks: permission.yml
-  when: nextcloud_update|changed
+  when: nextcloud_update is changed
