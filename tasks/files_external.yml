@@ -14,4 +14,4 @@
   command: "/usr/bin/php occ files_external:import /home/nextcloud/files_external_{{ fe_config.key }}.json"
   args:
     chdir: /opt/nextcloud
-  when: nextcloud_fe_setting|changed
+  when: nextcloud_fe_setting is changed
