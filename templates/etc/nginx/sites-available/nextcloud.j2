@@ -50,6 +50,19 @@ server {
     access_log /var/log/nginx/{{ nginx_site.key }}_access.log;
     error_log /var/log/nginx/{{ nginx_site.key }}_error.log;
 
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    add_header X-Robots-Tag none;
+    add_header X-Download-Options noopen;
+    add_header X-Permitted-Cross-Domain-Policies none;
+    add_header Referrer-Policy no-referrer;
+
+    # Remove X-Powered-By, which is an information leak
+    fastcgi_hide_header X-Powered-By;
+
+    # Remove X-Powered-By, which is an information leak
+    fastcgi_hide_header X-Powered-By;
+
     location /.well-known/acme-challenge {
         proxy_pass http://127.0.0.1:{{ certbot_port }};
     }
@@ -67,10 +80,10 @@ server {
     # last;
 
     location = /.well-known/carddav {
-      return 301 $scheme://$host/remote.php/dav;
+      return 301 https://$host/remote.php/dav;
     }
     location = /.well-known/caldav {
-      return 301 $scheme://$host/remote.php/dav;
+      return 301 https://$host/remote.php/dav;
     }
 
     # set max upload size
@@ -104,9 +117,6 @@ server {
     }
 
     location ~ ^/(?:index|remote|public|cron|core/ajax/update|status|ocs/v[12]|updater/.+|ocs-provider/.+|core/templates/40[34])\.php(?:$|/) {
-        add_header X-XSS-Protection "1; mode=block";
-        add_header Referrer-Policy "no-referrer";
-
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
