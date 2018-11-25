@@ -3,7 +3,7 @@
 - name: Look for upgrade
   become: true
   become_user: nextcloud
-  command: php updater/updater.phar
+  command: php updater/updater.phar --no-interactive
   args:
     chdir: /opt/nextcloud
   register: nextcloud_update
