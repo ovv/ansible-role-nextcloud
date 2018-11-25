@@ -1,6 +1,6 @@
 ---
 
-nextcloud_version: 14.0.1
+nextcloud_version: 14.0.4
 nextcloud_do_update: False
 nextcloud_apps: []
 nextcloud_files_external_configs: {}
