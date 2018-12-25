@@ -2,10 +2,8 @@
 
 - name: Requirements
   apt:
-    pkg: "{{ item }}"
+    pkg: unzip
     state: latest
-  with_items:
-    - unzip
 
 - name: Create user
   user:
