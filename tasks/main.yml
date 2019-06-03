@@ -86,7 +86,7 @@
     job: /usr/bin/php -f /opt/nextcloud/cron.php
 
 - include_tasks: app.yml
-  when: nextcloud_apps
+  when: nextcloud_apps | bool
 
 - include_tasks: update.yml
-  when: nextcloud_do_update
+  when: nextcloud_do_update | bool
