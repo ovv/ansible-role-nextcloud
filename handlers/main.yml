@@ -1,5 +1,9 @@
 ---
 
+- name: daemon-reload
+  service:
+    daemon-reload: true
+
 - name: Restart nginx
   service:
     name: nginx.service

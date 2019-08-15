@@ -85,6 +85,21 @@
     minute: '*/15'
     job: /usr/bin/php -f /opt/nextcloud/cron.php
 
+- name: Configure preview generator timer
+  template:
+    src: "etc/systemd/system/{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
+  with_items:
+    - nextcloud-preview.service
+    - nextcloud-preview.timer
+  notify: daemon-reload
+
+- name: Start & enable preview generator timer
+  service:
+    name: nextcloud-preview.timer
+    enabled: true
+    state: started
+
 - include_tasks: app.yml
   when: nextcloud_apps | bool
 
