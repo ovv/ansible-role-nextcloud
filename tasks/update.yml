@@ -9,7 +9,7 @@
   register: nextcloud_update
   changed_when: "'No update available' not in nextcloud_update.stdout"
   failed_when: false
-  
+
 - name: Copy update permission script
   template:
     dest: /home/nextcloud/permission-update.sh

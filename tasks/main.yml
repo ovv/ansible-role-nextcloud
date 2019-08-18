@@ -3,7 +3,7 @@
 - name: Requirements
   apt:
     pkg: unzip
-    state: latest
+    state: present
 
 - name: Create user
   user:
