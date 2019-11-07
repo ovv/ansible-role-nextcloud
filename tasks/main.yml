@@ -13,6 +13,7 @@
   get_url:
     url: "https://download.nextcloud.com/server/releases/nextcloud-{{ nextcloud_version }}.zip"
     dest: /usr/src/nextcloud.zip
+    force: False
   register: nextcloud_download
 
 - name: Unarchive
